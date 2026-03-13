@@ -24,22 +24,10 @@ class PrimeThingy:
         for num in self.primelist:
             #if len(num) < 3:
             #    continue
-            if len(num) % 2 == 1:
+            if len(num) % 2 == 0:
                 continue
-            p1 = num[::2]
-            p2 = num[1::2]
-            joined1 = p1 + p2
-            joined2 = p2 + p1
-            if joined1[0] == '0' or joined2[0] == '0':
-                continue
-            if joined1 in self.primeset:
-                faro_in = self.test_faro_in(num)
-            else:
-                faro_in = []
-            if joined2 in self.primeset:
-                faro_out = self.test_faro_out(num)
-            else:
-                faro_out = []
+            faro_in = self.test_faro_in(num)
+            faro_out = self.test_faro_out(num)
 
             if faro_in:
                 if faro_out:
@@ -54,17 +42,18 @@ class PrimeThingy:
             return [num]
         seq = [num]
         current_num = num
-        midpoint = len(num)//2
+        splitpoint = len(num)//2 + 1
         if num == '110017':
             pass
         while True:
-            left = current_num[:midpoint]
-            right = current_num[midpoint:]
-            assert len(left) == len(right)
+            left = current_num[:splitpoint]
+            right = current_num[splitpoint:]
+            assert len(left) == len(right) + 1
             shuffled_arr = []
-            for i in range(len(left)):
+            for i in range(len(right)):
                 shuffled_arr.append(left[i])
                 shuffled_arr.append(right[i])
+            shuffled_arr.append(left[-1])
             shuffled = ''.join(shuffled_arr)
             if shuffled not in self.primeset:
                 return []
@@ -88,11 +77,14 @@ class PrimeThingy:
         while True:
             left = current_num[:midpoint]
             right = current_num[midpoint:]
-            assert len(left) == len(right)
+            assert len(left) + 1 == len(right)
+            if right[0] == '0':
+                return []
             shuffled_arr = []
             for i in range(len(left)):
                 shuffled_arr.append(right[i])
                 shuffled_arr.append(left[i])
+            shuffled_arr.append(right[-1])
             shuffled = ''.join(shuffled_arr)
             if shuffled not in self.primeset:
                 return []
@@ -106,6 +98,5 @@ if __name__ == '__main__':
     pt = PrimeThingy()
     pt.load('P-1000000.txt')
 
-    print('Results for primes with an odd number of digits')
     pt.full_faro()
 
