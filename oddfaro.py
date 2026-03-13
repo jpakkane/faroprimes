@@ -98,5 +98,6 @@ if __name__ == '__main__':
     pt = PrimeThingy()
     pt.load('P-1000000.txt')
 
+    print('Results for primes with an odd number of digits')
     pt.full_faro()
 
